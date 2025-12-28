@@ -13,15 +13,18 @@ class LinkService {
 	private LinkMapper $mapper;
 	private IUserSession $userSession;
 	private IGroupManager $groupManager;
+	private SecurityService $securityService;
 
 	public function __construct(
 		LinkMapper $mapper,
 		IUserSession $userSession,
-		IGroupManager $groupManager
+		IGroupManager $groupManager,
+		SecurityService $securityService
 	) {
 		$this->mapper = $mapper;
 		$this->userSession = $userSession;
 		$this->groupManager = $groupManager;
+		$this->securityService = $securityService;
 	}
 
 	/**
@@ -67,12 +70,24 @@ class LinkService {
 	 * Create new link
 	 */
 	public function createLink(array $data): Link {
+		// SECURITY FIX: Validate and sanitize all inputs
+		$url = $data['url'] ?? '';
+		$this->securityService->validateUrl($url);
+
+		$title = $this->securityService->sanitizeText($data['title'] ?? '', 255);
+		$description = isset($data['description']) && $data['description'] !== null
+			? $this->securityService->sanitizeText($data['description'], 1000)
+			: null;
+
+		$target = $this->securityService->validateTarget($data['target'] ?? '_blank');
+		$groups = $this->securityService->validateGroups($data['groups'] ?? []);
+
 		$link = new Link();
-		$link->setTitle($data['title'] ?? '');
-		$link->setUrl($data['url'] ?? '');
-		$link->setDescription($data['description'] ?? null);
-		$link->setTarget($data['target'] ?? '_blank');
-		$link->setGroups($data['groups'] ?? []);
+		$link->setTitle($title);
+		$link->setUrl($url);
+		$link->setDescription($description);
+		$link->setTarget($target);
+		$link->setGroups($groups);
 		$link->setPosition($data['position'] ?? 0);
 		$link->setEnabled($data['enabled'] ?? 1);
 		$link->setCreatedAt(new \DateTime());
@@ -89,20 +104,25 @@ class LinkService {
 	public function updateLink(int $id, array $data): Link {
 		$link = $this->mapper->findById($id);
 
+		// SECURITY FIX: Validate and sanitize all inputs
 		if (isset($data['title'])) {
-			$link->setTitle($data['title']);
+			$link->setTitle($this->securityService->sanitizeText($data['title'], 255));
 		}
 		if (isset($data['url'])) {
+			$this->securityService->validateUrl($data['url']);
 			$link->setUrl($data['url']);
 		}
 		if (array_key_exists('description', $data)) {
-			$link->setDescription($data['description']);
+			$description = $data['description'] !== null
+				? $this->securityService->sanitizeText($data['description'], 1000)
+				: null;
+			$link->setDescription($description);
 		}
 		if (isset($data['target'])) {
-			$link->setTarget($data['target']);
+			$link->setTarget($this->securityService->validateTarget($data['target']));
 		}
 		if (isset($data['groups'])) {
-			$link->setGroups($data['groups']);
+			$link->setGroups($this->securityService->validateGroups($data['groups']));
 		}
 		if (isset($data['position'])) {
 			$link->setPosition($data['position']);

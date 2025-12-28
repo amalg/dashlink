@@ -53,11 +53,14 @@ export default defineComponent({
 	width: 100%;
 	height: 100%;
 	transform-style: preserve-3d;
-	transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+	transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
 	z-index: 10;
+	border-radius: inherit;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
 	&.is-flipped {
 		transform: rotateY(180deg);
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 	}
 }
 
@@ -67,15 +70,23 @@ export default defineComponent({
 	inset: 0;
 	backface-visibility: hidden;
 	-webkit-backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
 	border-radius: inherit;
+	overflow: hidden;
 }
 
 .effect-flip-front {
 	z-index: 2;
+	background: transparent;
+	display: flex;
+	align-items: stretch;
+	transform: rotateY(0deg);
 }
 
 .effect-flip-back {
 	transform: rotateY(180deg);
+	z-index: 1;
+	background: transparent;
 	background-size: cover;
 	background-position: center;
 	display: flex;
@@ -92,11 +103,20 @@ export default defineComponent({
 			var(--color-main-background) 0%,
 			var(--color-background-hover) 100%
 		);
-		opacity: 0.85;
+		opacity: 0.95;
 		backdrop-filter: blur(8px);
 		-webkit-backdrop-filter: blur(8px);
 		border-radius: inherit;
 	}
+}
+
+// Firefox-specific fix: ensure back face is on top when flipped
+.effect-flip-container.is-flipped .effect-flip-back {
+	z-index: 3;
+}
+
+.effect-flip-container.is-flipped .effect-flip-front {
+	z-index: 1;
 }
 
 .flip-back-content {

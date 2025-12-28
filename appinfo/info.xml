@@ -23,7 +23,7 @@ Admin Panel:
 - Live preview panel with group filter simulation
 - Modern Nextcloud UI (toggle switches, modals, autocomplete pickers)
     ]]></description>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <licence>agpl</licence>
     <author>DashLink Team</author>
     <namespace>DashLink</namespace>
