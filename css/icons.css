@@ -1,0 +1,14 @@
+/* Light mode - black icon */
+.app-dashlink {
+	background-image: url('../img/app.svg') !important;
+}
+
+/* Dark mode - white icon */
+[data-themes-dark] .app-dashlink,
+[data-theme-dark] .app-dashlink,
+[data-theme-dark-highcontrast] .app-dashlink,
+body[data-theme-dark] .app-dashlink,
+body[data-theme-dark-highcontrast] .app-dashlink,
+.theme--dark .app-dashlink {
+	background-image: url('../img/app-dark.svg') !important;
+}

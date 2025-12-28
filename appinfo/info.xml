@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+    <id>dashlink</id>
+    <name>DashLink</name>
+    <summary>Dashboard widget for external website links</summary>
+    <description><![CDATA[
+DashLink provides a dashboard widget that displays external website links configured by administrators.
+
+Core Features:
+- Dashboard widget displaying external links (max 10 visible)
+- Custom icon/logo upload for each link (PNG, JPG, GIF, SVG, WebP up to 2MB)
+- Group-based visibility control (show links to specific user groups)
+- Three modular hover animation effects (Blur Overlay, 3D Card Flip, Slide Panel)
+- Responsive grid layout (1-2 columns) with full dark mode support
+
+Admin Panel:
+- Complete CRUD operations for link management
+- Drag & drop reordering with visual position badges
+- Export/Import links to/from JSON with icon URL support
+- Automatic icon downloading from external URLs during import
+- Duplicate detection on import (by title or URL)
+- Live preview panel with group filter simulation
+- Modern Nextcloud UI (toggle switches, modals, autocomplete pickers)
+    ]]></description>
+    <version>1.0.0</version>
+    <licence>agpl</licence>
+    <author>DashLink Team</author>
+    <namespace>DashLink</namespace>
+    <category>dashboard</category>
+    <category>organization</category>
+    
+    <website>https://github.com/lexioj/dashlink</website>
+	<bugs>https://github.com/lexioj/dashlink/issues</bugs>
+	<repository>https://github.com/lexioj/dashlink.git</repository>
+
+    <screenshot small-thumbnail="https://raw.githubusercontent.com/LexioJ/dashlink/main/docs/images/dashlink.png">https://raw.githubusercontent.com/LexioJ/dashlink/main/docs/images/dashlink.gif</screenshot>
+    <screenshot>https://raw.githubusercontent.com/LexioJ/dashlink/main/docs/images/admin-settings.png</screenshot>
+    <screenshot>https://raw.githubusercontent.com/LexioJ/dashlink/main/docs/images/link-settings.png</screenshot>
+ 
+    <dependencies>
+        <nextcloud min-version="31" max-version="32"/>
+    </dependencies>
+
+    <settings>
+        <admin-section>OCA\DashLink\Settings\AdminSection</admin-section>
+        <admin>OCA\DashLink\Settings\Admin</admin>
+    </settings>
+</info>

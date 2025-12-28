@@ -1,0 +1,154 @@
+/**
+ * DashLink Admin Panel Styles
+ */
+
+#dashlink-admin-root {
+	width: 100%;
+	min-height: 100vh;
+	padding: 20px;
+	background: var(--color-main-background);
+
+	* {
+		box-sizing: border-box;
+	}
+}
+
+.dashlink-admin {
+	max-width: 1400px;
+	margin: 0 auto;
+}
+
+.admin-header {
+	margin-bottom: 30px;
+
+	h2 {
+		margin: 0 0 8px 0;
+		font-size: 24px;
+		font-weight: 600;
+		color: var(--color-main-text);
+	}
+
+	.subtitle {
+		margin: 0;
+		color: var(--color-text-maxcontrast);
+		font-size: 14px;
+	}
+}
+
+.admin-layout {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 30px;
+
+	@media (min-width: 1024px) {
+		grid-template-columns: 1fr 400px;
+	}
+}
+
+.admin-main {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+.links-section {
+	background: var(--color-main-background);
+	border: 1px solid var(--color-border);
+	border-radius: var(--border-radius-large);
+	padding: 20px;
+}
+
+.section-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+
+	h3 {
+		margin: 0;
+		font-size: 18px;
+		font-weight: 600;
+	}
+}
+
+.links-list {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.link-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px;
+	background: var(--color-background-hover);
+	border-radius: var(--border-radius);
+	transition: background 0.2s ease;
+
+	&:hover {
+		background: var(--color-background-dark);
+	}
+}
+
+.link-info {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex: 1;
+	min-width: 0;
+}
+
+.link-icon {
+	width: 32px;
+	height: 32px;
+	border-radius: var(--border-radius);
+	flex-shrink: 0;
+	object-fit: contain;
+}
+
+.link-details {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+
+	strong {
+		font-weight: 500;
+		font-size: 14px;
+	}
+
+	.link-url {
+		font-size: 12px;
+		color: var(--color-text-maxcontrast);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+}
+
+.link-actions {
+	display: flex;
+	gap: 4px;
+}
+
+// Modal styles
+.modal-content {
+	padding: 20px;
+	min-width: 400px;
+	max-width: 600px;
+
+	h2 {
+		margin: 0 0 20px 0;
+		font-size: 20px;
+		font-weight: 600;
+	}
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+	.dashlink-admin {
+		.links-section {
+			background: var(--color-main-background);
+		}
+	}
+}

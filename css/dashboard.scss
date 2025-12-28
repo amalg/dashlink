@@ -1,0 +1,45 @@
+/**
+ * DashLink Dashboard Widget Styles
+ */
+
+.dashlink-dashboard {
+	width: 100%;
+	padding: 0;
+	box-sizing: border-box;
+
+	* {
+		box-sizing: border-box;
+	}
+}
+
+.links-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 12px;
+	width: 100%;
+
+	@media (min-width: 768px) {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	@media (min-width: 1200px) {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	@media (min-width: 1600px) {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+.empty-state {
+	text-align: center;
+	padding: 40px 20px;
+	color: var(--color-text-maxcontrast);
+	font-size: 14px;
+}
+
+// Ensure proper z-index for effects
+.link-card {
+	position: relative;
+	isolation: isolate;
+}

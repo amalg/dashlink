@@ -1,0 +1,23 @@
+# Files to exclude from GitHub release archives (export-ignore)
+# These files stay in the repo but won't be in downloaded ZIPs
+
+# Development files
+.editorconfig export-ignore
+.gitignore export-ignore
+.gitattributes export-ignore
+Makefile export-ignore
+webpack.config.js export-ignore
+package.json export-ignore
+package-lock.json export-ignore
+composer.json export-ignore
+
+# Documentation
+CLAUDE.md export-ignore
+docs/ export-ignore
+
+# Source files (since built files in js/ are what's needed)
+src/ export-ignore
+css/ export-ignore
+
+# Git files
+.github/ export-ignore

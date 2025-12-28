@@ -1,0 +1,60 @@
+# Dependencies
+vendor/
+node_modules/
+composer.lock
+
+# Node/Vite build artifacts
+dist/
+.vite/
+vite.config.local.*.ts
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Nextcloud build artifacts
+appstore/
+build/
+.php_cs.cache
+.php-cs-fixer.cache
+
+# Vite build outputs (reference widget)
+js/
+
+# IDE files
+.idea/
+.vscode/
+.warp.md
+.claude
+.claude.md
+
+# OS/System files
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Logs
+*.log
+
+# Testing/Coverage
+coverage/
+junit.xml
+.phpunit.result.cache
+phpunit.xml
+docs/testing.md
+tests/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Backup files
+*.bak
+*.backup
+
+# Cache
+.cache/
+
+# Environment files
+.env
+.env.local
