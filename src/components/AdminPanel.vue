@@ -130,7 +130,8 @@
 							:link="editingLink"
 							:groups="groups"
 							@save="handleSaveLink"
-							@cancel="closeLinkForm" />
+							@cancel="closeLinkForm"
+							@icon-updated="handleIconUpdated" />
 					</div>
 				</NcModal>
 			</div>
@@ -271,6 +272,16 @@ export default defineComponent({
 				closeLinkForm()
 			} catch (error) {
 				showError('Failed to save link: ' + error.message)
+			}
+		}
+
+		async function handleIconUpdated(updatedLink) {
+			// Refresh the links list to show the updated icon
+			await fetchLinks()
+
+			// Update the editing link with the new icon URL
+			if (editingLink.value && updatedLink) {
+				editingLink.value = updatedLink
 			}
 		}
 
@@ -431,6 +442,7 @@ export default defineComponent({
 			editLink,
 			closeLinkForm,
 			handleSaveLink,
+			handleIconUpdated,
 			confirmDelete,
 			toggleEnabled,
 			saveSettings,

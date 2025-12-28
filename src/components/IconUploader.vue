@@ -83,13 +83,15 @@ export default defineComponent({
 		}
 
 		async function uploadFile(file) {
+			// Show preview immediately from local file for better UX
+			const reader = new FileReader()
+			reader.onload = (e) => {
+				previewUrl.value = e.target?.result
+			}
+			reader.readAsDataURL(file)
+
 			if (!props.linkId) {
-				// Show preview for new links
-				const reader = new FileReader()
-				reader.onload = (e) => {
-					previewUrl.value = e.target?.result
-				}
-				reader.readAsDataURL(file)
+				// For new links, only show preview - no upload yet
 				return
 			}
 
@@ -97,7 +99,7 @@ export default defineComponent({
 				const formData = new FormData()
 				formData.append('icon', file)
 
-				await axios.post(
+				const response = await axios.post(
 					generateUrl('/apps/dashlink/api/v1/admin/links/{id}/icon', { id: props.linkId }),
 					formData,
 					{
@@ -107,8 +109,21 @@ export default defineComponent({
 					}
 				)
 
-				emit('uploaded')
+				// Update preview with server URL after successful upload
+				const link = response.data
+				if (link && link.iconUrl) {
+					previewUrl.value = link.iconUrl + '?t=' + Date.now() // Cache bust
+				}
+
+				// Reset file input to allow re-uploading
+				if (fileInput.value) {
+					fileInput.value.value = ''
+				}
+
+				emit('uploaded', link)
 			} catch (error) {
+				// Clear preview on error
+				previewUrl.value = null
 				showError('Failed to upload icon: ' + error.message)
 			}
 		}
@@ -120,11 +135,14 @@ export default defineComponent({
 			}
 
 			try {
-				await axios.delete(
+				const response = await axios.delete(
 					generateUrl('/apps/dashlink/api/v1/admin/links/{id}/icon', { id: props.linkId })
 				)
 
-				emit('removed')
+				// Clear preview immediately
+				previewUrl.value = null
+
+				emit('removed', response.data)
 			} catch (error) {
 				showError('Failed to remove icon: ' + error.message)
 			}
@@ -172,21 +190,34 @@ export default defineComponent({
 
 	.remove-icon {
 		position: absolute;
-		top: -8px;
-		right: -8px;
+		top: -10px;
+		right: -10px;
 		background: var(--color-error);
 		color: white;
-		border: none;
+		border: 2px solid var(--color-main-background);
 		border-radius: 50%;
-		width: 24px;
-		height: 24px;
+		width: 28px;
+		height: 28px;
+		min-width: 28px;
+		min-height: 28px;
+		padding: 0;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		cursor: pointer;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+		transition: all 0.2s ease;
+		outline: none;
 
 		&:hover {
-			background: var(--color-error-hover);
+			background: #c9302c;
+			border-color: transparent;
+			box-shadow: 0 2px 8px rgba(201, 48, 44, 0.5);
+			transform: scale(1.1);
+		}
+
+		&:active {
+			transform: scale(0.95);
 		}
 	}
 }

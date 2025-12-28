@@ -7,6 +7,7 @@ use OCP\IConfig;
 
 class SettingsService {
 	private IConfig $config;
+	private SecurityService $securityService;
 	private string $appName = 'dashlink';
 
 	// Available effects - must match frontend registry
@@ -30,9 +31,11 @@ class SettingsService {
 
 	private const DEFAULT_EFFECT = 'blur';
 	private const DEFAULT_WIDGET_TITLE = 'DashLink';
+	private const MAX_TITLE_LENGTH = 100;
 
-	public function __construct(IConfig $config) {
+	public function __construct(IConfig $config, SecurityService $securityService) {
 		$this->config = $config;
+		$this->securityService = $securityService;
 	}
 
 	/**
@@ -78,8 +81,10 @@ class SettingsService {
 	 * Set widget title
 	 */
 	public function setWidgetTitle(string $title): void {
-		// Trim and validate
-		$title = trim($title);
+		// SECURITY FIX: Sanitize title to prevent XSS attacks
+		$title = $this->securityService->sanitizeText($title, self::MAX_TITLE_LENGTH);
+
+		// Use default if empty after sanitization
 		if (empty($title)) {
 			$title = self::DEFAULT_WIDGET_TITLE;
 		}

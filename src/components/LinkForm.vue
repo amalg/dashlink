@@ -41,8 +41,9 @@
 			<label>Icon</label>
 			<IconUploader
 				:link-id="link?.id"
-				:current-icon="link?.iconUrl"
-				@uploaded="handleIconUploaded" />
+				:current-icon="currentIconUrl"
+				@uploaded="handleIconUploaded"
+				@removed="handleIconRemoved" />
 		</div>
 
 		<div class="form-group">
@@ -97,7 +98,7 @@ export default defineComponent({
 			default: () => [],
 		},
 	},
-	emits: ['save', 'cancel'],
+	emits: ['save', 'cancel', 'icon-updated'],
 	setup(props, { emit }) {
 		const formData = ref({
 			title: '',
@@ -108,6 +109,8 @@ export default defineComponent({
 			groupsObjects: [],
 			enabled: true,
 		})
+
+		const currentIconUrl = ref(null)
 
 		// Initialize form with link data if editing
 		watch(() => props.link, (link) => {
@@ -123,6 +126,7 @@ export default defineComponent({
 					// Convert enabled to boolean (backend uses 0/1)
 					enabled: Boolean(link.enabled ?? 1),
 				}
+				currentIconUrl.value = link.iconUrl || null
 			} else {
 				formData.value = {
 					title: '',
@@ -133,6 +137,7 @@ export default defineComponent({
 					groupsObjects: [],
 					enabled: true,
 				}
+				currentIconUrl.value = null
 			}
 		}, { immediate: true })
 
@@ -157,15 +162,29 @@ export default defineComponent({
 			emit('save', dataToSave)
 		}
 
-		function handleIconUploaded() {
-			// Icon upload handled by IconUploader
+		function handleIconUploaded(updatedLink) {
+			// Update the current icon URL immediately for preview
+			if (updatedLink && updatedLink.iconUrl) {
+				currentIconUrl.value = updatedLink.iconUrl
+			}
+			// Notify parent to refresh links
+			emit('icon-updated', updatedLink)
+		}
+
+		function handleIconRemoved(updatedLink) {
+			// Clear the icon URL immediately
+			currentIconUrl.value = null
+			// Notify parent to refresh links
+			emit('icon-updated', updatedLink)
 		}
 
 		return {
 			formData,
+			currentIconUrl,
 			enabledSwitch,
 			handleSubmit,
 			handleIconUploaded,
+			handleIconRemoved,
 		}
 	},
 })

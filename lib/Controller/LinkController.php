@@ -5,6 +5,7 @@ namespace OCA\DashLink\Controller;
 
 use OCA\DashLink\Service\IconService;
 use OCA\DashLink\Service\LinkService;
+use OCA\DashLink\Service\RateLimitService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Http;
@@ -13,12 +14,15 @@ use OCP\AppFramework\Http\JSONResponse;
 use OCP\IGroupManager;
 use OCP\IRequest;
 use OCP\IURLGenerator;
+use OCP\IUserSession;
 
 class LinkController extends Controller {
 	private LinkService $linkService;
 	private IconService $iconService;
 	private IGroupManager $groupManager;
 	private IURLGenerator $urlGenerator;
+	private RateLimitService $rateLimitService;
+	private IUserSession $userSession;
 
 	public function __construct(
 		string $appName,
@@ -26,13 +30,17 @@ class LinkController extends Controller {
 		LinkService $linkService,
 		IconService $iconService,
 		IGroupManager $groupManager,
-		IURLGenerator $urlGenerator
+		IURLGenerator $urlGenerator,
+		RateLimitService $rateLimitService,
+		IUserSession $userSession
 	) {
 		parent::__construct($appName, $request);
 		$this->linkService = $linkService;
 		$this->iconService = $iconService;
 		$this->groupManager = $groupManager;
 		$this->urlGenerator = $urlGenerator;
+		$this->rateLimitService = $rateLimitService;
+		$this->userSession = $userSession;
 	}
 
 	/**
@@ -287,17 +295,51 @@ class LinkController extends Controller {
 	 */
 	public function importLinks(): JSONResponse {
 		try {
+			// SECURITY FIX: Rate limiting to prevent DoS attacks
+			$user = $this->userSession->getUser();
+			if ($user === null) {
+				return new JSONResponse(['error' => 'User not authenticated'], Http::STATUS_UNAUTHORIZED);
+			}
+
+			$userId = $user->getUID();
+
+			// Rate limit: 5 imports per hour per user
+			if ($this->rateLimitService->isRateLimited('import', $userId, 5, 3600)) {
+				return new JSONResponse(
+					['error' => 'Rate limit exceeded. You can only import 5 times per hour. Please try again later.'],
+					Http::STATUS_TOO_MANY_REQUESTS
+				);
+			}
+
 			$file = $this->request->getUploadedFile('file');
 
 			if ($file === null || $file['error'] !== UPLOAD_ERR_OK) {
 				return new JSONResponse(['error' => 'No file uploaded'], Http::STATUS_BAD_REQUEST);
 			}
 
+			// SECURITY FIX: Limit file size to 1MB for import
+			if ($file['size'] > 1024 * 1024) {
+				return new JSONResponse(
+					['error' => 'File too large. Maximum size for import is 1MB.'],
+					Http::STATUS_BAD_REQUEST
+				);
+			}
+
 			$content = file_get_contents($file['tmp_name']);
-			$linksData = json_decode($content, true);
+
+			// SECURITY FIX: Limit JSON depth to prevent memory exhaustion
+			$linksData = json_decode($content, true, 10);
 
 			if (!is_array($linksData)) {
 				return new JSONResponse(['error' => 'Invalid JSON format'], Http::STATUS_BAD_REQUEST);
+			}
+
+			// SECURITY FIX: Limit number of links in a single import
+			if (count($linksData) > 100) {
+				return new JSONResponse(
+					['error' => 'Too many links in import. Maximum 100 links per import.'],
+					Http::STATUS_BAD_REQUEST
+				);
 			}
 
 			$result = $this->linkService->importLinks($linksData, $this->iconService);
