@@ -1,10 +1,9 @@
-# DashLink - External Links Widget for Nextcloud
-
-A Nextcloud dashboard widget that displays external website links with customizable hover effects, group-based visibility, and an admin management interface.
-
-[![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/lexioj/dashlink/releases)
+[![Version](https://img.shields.io/badge/version-1.1.0-blue)](https://github.com/lexioj/dashlink/releases)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-green)](LICENSE)
 [![Nextcloud](https://img.shields.io/badge/Nextcloud-31+-blue)](https://nextcloud.com)
+# DashLink - External Links Widget for Nextcloud
+
+A Nextcloud dashboard widget that displays external website links with customizable hover effects using optional group-based visibility.
 
 ## Features
 
@@ -43,7 +42,7 @@ A Nextcloud dashboard widget that displays external website links with customiza
 
 ## Installation
 
-### From App Store
+### From App Store (soon)
 1. Navigate to Apps in your Nextcloud
 2. Search for "DashLink"
 3. Click Install
