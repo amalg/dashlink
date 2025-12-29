@@ -42,7 +42,7 @@ A Nextcloud dashboard widget that displays external website links with customiza
 
 ## Installation
 
-### From App Store (soon)
+### From App Store
 1. Navigate to Apps in your Nextcloud
 2. Search for "DashLink"
 3. Click Install
