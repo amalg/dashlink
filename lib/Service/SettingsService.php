@@ -32,7 +32,7 @@ class SettingsService {
 	private const DEFAULT_EFFECT = 'blur';
 	private const DEFAULT_WIDGET_TITLE = 'DashLink';
 	private const MAX_TITLE_LENGTH = 100;
-	private const DEFAULT_USER_LINKS_ENABLED = true;
+	private const DEFAULT_USER_LINKS_ENABLED = false;
 	private const DEFAULT_USER_LINK_LIMIT = 10;
 	private const MIN_USER_LINK_LIMIT = 1;
 	private const MAX_USER_LINK_LIMIT = 50;
